@@ -1,1 +1,370 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101014">
+<title>RAVEN STUDIO</title>
+<style>
+:root {
+  --bg:#101014;
+  --panel:#1b1b23;
+  --gold:#d5a84d;
+  --text:#f4f0e8;
+  --muted:#aaa6a0;
+}
+* {box-sizing:border-box}
+body {
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Arial,sans-serif;
+}
+header {
+  padding:22px 18px;
+  background:#17171d;
+  border-bottom:1px solid #35323a;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.logo {
+  font-size:22px;
+  font-weight:bold;
+  letter-spacing:3px;
+}
+.logo span {color:var(--gold)}
+header small {color:var(--muted)}
+nav {
+  display:flex;
+  overflow-x:auto;
+  background:#17171d;
+  padding:10px;
+  gap:8px;
+}
+nav button {
+  background:transparent;
+  color:#bbb;
+  border:1px solid #393943;
+  padding:11px 14px;
+  border-radius:7px;
+  white-space:nowrap;
+}
+nav button.active {
+  background:var(--gold);
+  color:#111;
+  border-color:var(--gold);
+  font-weight:bold;
+}
+main {padding:20px;max-width:900px;margin:auto}
+h1 {font-size:27px;margin-bottom:8px}
+h2 {font-size:19px;color:var(--gold)}
+p {color:var(--muted);line-height:1.5}
+.panel {
+  background:var(--panel);
+  padding:18px;
+  border:1px solid #34343e;
+  border-radius:12px;
+  margin:16px 0;
+}
+input,textarea,select {
+  width:100%;
+  background:#101014;
+  color:white;
+  border:1px solid #454550;
+  border-radius:7px;
+  padding:13px;
+  margin:7px 0 15px;
+  font:inherit;
+}
+textarea {min-height:110px;resize:vertical}
+label {font-size:13px;color:var(--muted)}
+button.action {
+  background:var(--gold);
+  color:#111;
+  border:0;
+  border-radius:7px;
+  padding:12px 17px;
+  font-weight:bold;
+  cursor:pointer;
+}
+button.secondary {
+  background:#34343e;
+  color:white;
+  border:1px solid #50505a;
+  border-radius:7px;
+  padding:10px 14px;
+}
+.stat {
+  display:inline-block;
+  background:#24242d;
+  border-radius:8px;
+  padding:13px;
+  margin:5px;
+  min-width:105px;
+}
+.stat strong {display:block;font-size:23px;color:var(--gold)}
+.hidden {display:none}
+.item {
+  padding:13px;
+  background:#24242d;
+  border-radius:8px;
+  margin:10px 0;
+  overflow-wrap:anywhere;
+}
+footer {
+  text-align:center;
+  color:#777;
+  padding:30px;
+  font-size:12px;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">RAVEN <span>STUDIO</span></div>
+  <small>FILM PRODUCTION</small>
+</header>
+
+<nav>
+  <button class="active" onclick="showPage('home',this)">Dashboard</button>
+  <button onclick="showPage('films',this)">My Films</button>
+  <button onclick="showPage('characters',this)">Characters</button>
+  <button onclick="showPage('scenes',this)">Scene Builder</button>
+  <button onclick="showPage('storyboard',this)">Storyboard</button>
+</nav>
+
+<main>
+
+<section id="home">
+  <h1>Welcome to RAVEN STUDIO</h1>
+  <p>Your independent AI filmmaking studio. Create worlds, characters and cinematic stories.</p>
+
+  <div class="panel">
+    <h2>Production Overview</h2>
+    <div class="stat"><strong id="filmCount">0</strong>Films</div>
+    <div class="stat"><strong id="sceneCount">0</strong>Scenes</div>
+    <div class="stat"><strong id="charCount">0</strong>Characters</div>
+  </div>
+
+  <div class="panel">
+    <h2>Start a New Film</h2>
+    <label>Film title</label>
+    <input id="newFilm" placeholder="Enter your movie title">
+    <label>Genre</label>
+    <select id="genre">
+      <option>Science Fiction</option>
+      <option>Thriller</option>
+      <option>Mystery</option>
+      <option>Action</option>
+      <option>Drama</option>
+      <option>Horror</option>
+      <option>Adventure</option>
+    </select>
+    <button class="action" onclick="createFilm()">CREATE FILM</button>
+  </div>
+</section>
+
+<section id="films" class="hidden">
+  <h1>My Films</h1>
+  <p>Your movie projects.</p>
+  <div id="filmList"></div>
+</section>
+
+<section id="characters" class="hidden">
+  <h1>Character Library</h1>
+  <p>Build and save your film characters.</p>
+  <div class="panel">
+    <label>Character name</label>
+    <input id="charName" placeholder="Character name">
+    <label>Appearance and clothing</label>
+    <textarea id="charLook" placeholder="Describe face, hair, clothing, age and distinctive features..."></textarea>
+    <label>Personality</label>
+    <textarea id="charPersonality" placeholder="Personality and behaviour..."></textarea>
+    <button class="action" onclick="addCharacter()">SAVE CHARACTER</button>
+  </div>
+  <div id="characterList"></div>
+</section>
+
+<section id="scenes" class="hidden">
+  <h1>Scene Builder</h1>
+  <p>Design cinematic scenes and prepare prompts for AI video tools.</p>
+  <div class="panel">
+    <label>Scene title</label>
+    <input id="sceneTitle" placeholder="e.g. The 1960s Café">
+    <label>Location and atmosphere</label>
+    <textarea id="sceneLocation" placeholder="Describe the environment, lighting, weather and atmosphere..."></textarea>
+    <label>Characters and action</label>
+    <textarea id="sceneAction" placeholder="Who is in the scene? What happens? Describe exact positions and movements..."></textarea>
+    <label>Camera movement</label>
+    <select id="camera">
+      <option>Slow cinematic pan</option>
+      <option>Slow dolly forward</option>
+      <option>Static wide shot</option>
+      <option>Tracking shot</option>
+      <option>Close-up</option>
+      <option>Over-the-shoulder shot</option>
+    </select>
+    <label>Visual style</label>
+    <select id="visualStyle">
+      <option>Cinematic realism</option>
+      <option>Black and white film</option>
+      <option>1960s vintage cinema</option>
+      <option>Dark science fiction</option>
+      <option>Neo-noir thriller</option>
+    </select>
+    <button class="action" onclick="buildScene()">BUILD SCENE PROMPT</button>
+  </div>
+  <div class="panel">
+    <h2>Generated Scene Prompt</h2>
+    <textarea id="sceneOutput" placeholder="Your cinematic prompt will appear here..."></textarea>
+    <button class="action" onclick="copyPrompt()">COPY PROMPT</button>
+    <button class="secondary" onclick="saveScene()">SAVE SCENE</button>
+  </div>
+  <div id="sceneList"></div>
+</section>
+
+<section id="storyboard" class="hidden">
+  <h1>Storyboard</h1>
+  <p>Organise your saved scenes into a film sequence.</p>
+  <div id="storyList"></div>
+</section>
+
+</main>
+
+<footer>RAVEN STUDIO © 2026 · INDEPENDENT FILMMAKING</footer>
+
+<script>
+const getData = (key) => {
+  try { return JSON.parse(localStorage.getItem(key)) || []; }
+  catch(e) { return []; }
+};
+let films=getData("raven_films");
+let characters=getData("raven_characters");
+let scenes=getData("raven_scenes");
+
+function saveData() {
+  localStorage.setItem("raven_films",JSON.stringify(films));
+  localStorage.setItem("raven_characters",JSON.stringify(characters));
+  localStorage.setItem("raven_scenes",JSON.stringify(scenes));
+  updateDashboard();
+  render();
+}
+
+function showPage(id,button) {
+  document.querySelectorAll("main section").forEach(s=>s.classList.add("hidden"));
+  document.getElementById(id).classList.remove("hidden");
+  document.querySelectorAll("nav button").forEach(b=>b.classList.remove("active"));
+  button.classList.add("active");
+  render();
+}
+
+function createFilm() {
+  const title=document.getElementById("newFilm").value.trim();
+  if(!title) return alert("Enter a film title first.");
+  films.push({title,genre:document.getElementById("genre").value});
+  document.getElementById("newFilm").value="";
+  saveData();
+  alert("Film created!");
+}
+
+function addCharacter() {
+  const name=document.getElementById("charName").value.trim();
+  if(!name) return alert("Enter a character name.");
+  characters.push({
+    name,
+    look:document.getElementById("charLook").value,
+    personality:document.getElementById("charPersonality").value
+  });
+  document.getElementById("charName").value="";
+  document.getElementById("charLook").value="";
+  document.getElementById("charPersonality").value="";
+  saveData();
+  alert("Character saved!");
+}
+
+function buildScene() {
+  const title=document.getElementById("sceneTitle").value;
+  const location=document.getElementById("sceneLocation").value;
+  const action=document.getElementById("sceneAction").value;
+  const camera=document.getElementById("camera").value;
+  const style=document.getElementById("visualStyle").value;
+
+  const prompt=`SCENE: ${title}
+
+LOCATION AND ATMOSPHERE:
+${location}
+
+CHARACTERS AND ACTION:
+${action}
+
+CAMERA:
+${camera}. Maintain continuous movement and consistent character positions. Avoid unnecessary cuts or scene changes.
+
+VISUAL STYLE:
+${style}.
+
+CINEMATIC REQUIREMENTS:
+Maintain consistent faces, clothing, lighting, geography and screen direction throughout the shot. Follow the described action precisely. No unexpected characters or reactions. High-quality cinematic composition.`;
+
+  document.getElementById("sceneOutput").value=prompt;
+}
+
+function copyPrompt() {
+  const text=document.getElementById("sceneOutput").value;
+  if(!text) return alert("Build a scene prompt first.");
+  if(navigator.clipboard) {
+    navigator.clipboard.writeText(text)
+      .then(()=>alert("Prompt copied!"))
+      .catch(()=>alert("Please select and copy the prompt manually."));
+  } else alert("Please select and copy the prompt manually.");
+}
+
+function saveScene() {
+  const title=document.getElementById("sceneTitle").value.trim();
+  const prompt=document.getElementById("sceneOutput").value;
+  if(!prompt) return alert("Build a scene prompt first.");
+  scenes.push({title:title||"Untitled Scene",prompt});
+  saveData();
+  alert("Scene saved to storyboard!");
+}
+
+function updateDashboard() {
+  document.getElementById("filmCount").textContent=films.length;
+  document.getElementById("sceneCount").textContent=scenes.length;
+  document.getElementById("charCount").textContent=characters.length;
+}
+
+function render() {
+  document.getElementById("filmList").innerHTML=films.map(f=>
+    `<div class="item"><strong>${escapeHTML(f.title)}</strong><p>${escapeHTML(f.genre)}</p></div>`
+  ).join("") || "<p>No films created yet.</p>";
+
+  document.getElementById("characterList").innerHTML=characters.map(c=>
+    `<div class="item"><strong>${escapeHTML(c.name)}</strong><p>${escapeHTML(c.look)}</p><p>${escapeHTML(c.personality)}</p></div>`
+  ).join("") || "<p>No characters saved yet.</p>";
+
+  document.getElementById("sceneList").innerHTML=scenes.map(s=>
+    `<div class="item"><strong>${escapeHTML(s.title)}</strong><p>${escapeHTML(s.prompt)}</p></div>`
+  ).join("");
+
+  document.getElementById("storyList").innerHTML=scenes.map((s,i)=>
+    `<div class="item"><strong>SHOT ${i+1}: ${escapeHTML(s.title)}</strong><p>${escapeHTML(s.prompt)}</p></div>`
+  ).join("") || "<p>Your storyboard is empty. Save a scene to begin.</p>";
+
+  updateDashboard();
+}
+
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g,c=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  })[c]);
+}
+
+render();
+</script>
+</body>
+</html>
+
